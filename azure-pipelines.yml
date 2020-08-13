@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'alpine'
+  vmImage: 'ubuntu-latest'
 
 steps:
 - script: echo Hello, world!
