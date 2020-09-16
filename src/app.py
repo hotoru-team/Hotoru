@@ -12,7 +12,7 @@ def hello():
 
 @app.route('/<name>')
 def render(name):
-    return render_template('hello.html.jinja', name=name)
+    return render_template('hello.html', name=name)
 
 if __name__ == '__main__':
     app.run()
