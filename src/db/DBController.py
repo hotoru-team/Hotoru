@@ -20,10 +20,11 @@ def get_estacion(codigo_estacion):
     """
     return estaciones.find_one({'codigo':codigo_estacion})
 
-def crear_estacion(estacion):
+def crear_estaciones(Estaciones=[]):
     """
-    Si no hay una estación con el mismo código de la estación que se pasa como 
-    argumento, se creará una nueva estación con el siguiente formato:
+    Se inserta una lista de estaciones en la base de datos si no existían previamente.
+    
+    Las estaciones deben tener el siguiente formato:
     ```javascript
     {
         "latitude": number,
@@ -39,8 +40,10 @@ def crear_estacion(estacion):
     }
     ```
     """
-    if(estaciones.find_one({"codigo":estacion.codigo}) == None):
-        estaciones.insert_one(estacion)
+    for estacion in Estaciones:
+        del estacion.mediciones[0]
+        if(estaciones.find_one({"codigo":estacion.codigo}) == None):
+            estaciones.insert_one(estacion)
 
 def insertar_medicion(codigo_estacion, medicion):
     """
