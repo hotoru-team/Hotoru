@@ -3,19 +3,28 @@
 import requests
 import numpy as np 
 import pandas as pd
-from IFuenteDeDatos import IFuenteDeDatos
 
+import abc
+
+class IFuenteDeDatos(abc.ABC):
+    @abc.abstractmethod
+    def getData(self):
+        """
+        Obtiene mediciones desde un servidor
+        """
+        pass
 
 class SIATA(IFuenteDeDatos):
 
-    url_minutal = 'siata.gov.co:3000/cc_api/estaciones/listar_minutal/'
+    url = 'http://siata.gov.co:3000/cc_api/estaciones/listar_minutal/'
+
     def __init__(self):
         pass
+    
     def getData(self):
         try:
             result = []
-            response = requests.get(self.url_minutal)
-            data = pd.read_json(response.content)
+            data = requests.get(self.url).json()
             for item in data:
                 result.append({
                     "latitude": item["latitude"],
@@ -32,7 +41,8 @@ class SIATA(IFuenteDeDatos):
                         "fecha_hora": item["fecha_hora"]
                     }]
                 })
+            print(result[1])
             return result
         except:
-            raise Exception("Error getting data from SIATA:\n")
+            raise Exception("Error getting data from SIATA")
 

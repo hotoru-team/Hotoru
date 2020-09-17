@@ -18,9 +18,11 @@ def getNewData():
     print("Getting new data from sources")
     for source in sources:
         estaciones = source.getData()
-        db.crear_estaciones(estaciones)
         for estacion in estaciones:
-            db.insertar_medicion(estacion.codigo, estacion.mediciones[0])
+            medicion = estacion["mediciones"][0]
+            db.crear_estacion(estacion)
+            db.insertar_medicion(estacion["codigo"],medicion) 
+            
     threading.Timer(60, getNewData).start()
 
 @app.route('/template')
@@ -28,13 +30,15 @@ def template():
     return render_template('template.html')
 
 @app.route('/')
-def hello():
-    estaciones = db.get_estaciones()
+def get_estaciones():
+    db_estaciones = db.get_estaciones()
+    estaciones = []
     ciudades = []
-    for estacion in estaciones:
+    for estacion in db_estaciones:
         if estacion["ciudad"] not in ciudades:
             ciudades.append(estacion["ciudad"])
-
+        estaciones.append(estacion)
+    print(estaciones)
     return render_template('estaciones.html', estaciones=estaciones, zonas=ciudades)
 
 @app.route('/<int:codigo>')
@@ -42,5 +46,5 @@ def render(codigo):
     return render_template('estacion.html', estacion=db.get_estacion(codigo))
 
 if __name__ == '__main__':
-    getNewData()
+    #getNewData()
     app.run()
