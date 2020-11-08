@@ -3,10 +3,7 @@ import db.DBController as db
 from flask import Flask, render_template
 from dotenv import load_dotenv
 from model.SIATA import SIATA
-from gpcharts import figure
-import shutil
-from os import remove, path, walk
-import os.path as path
+
 
 load_dotenv(dotenv_path='..', verbose=True)
 app = Flask(__name__)
@@ -48,8 +45,6 @@ def get_estaciones():
 
 @app.route('/graficas/<int:codigo>',methods=['GET'])
 def graficas(codigo):
-    if path.isfile("/home/johan/Escritorio/Hotoru2/Hotoru/src/templates/Grafica.html"):
-        remove("/home/johan/Escritorio/Hotoru2/Hotoru/src/templates/Grafica.html")
     db_estaciones = db.get_estaciones()
     fechas = []
     mediciones = []
@@ -61,26 +56,14 @@ def graficas(codigo):
             for i in range(len(medicion)):
                  mediciones.append(medicion[i]["PM2_5"])
                  fechas.append(medicion[i]["fecha_hora"])
-           
-    
-    
-    grafico = figure(title='Grafica',
-                  xlabel='Fecha',
-                  ylabel='PM 2.5',
-                  width=800,height=600)
+
     valoresY = mediciones
     valoresX = fechas
     print(valoresY)
     print(valoresX)
-    grafico.plot(valoresX,valoresY)
-    return render_template('graficas.html',nombre=nombre)
+    return render_template('graficas.html',nombre=nombre,mediciones=mediciones,fechas=fechas)
 
-@app.route('/grafico/')
-def renderGrafico():
-    if path.isfile("/home/johan/Escritorio/Hotoru2/Hotoru/src/templates/Grafica.html"):
-        remove("/home/johan/Escritorio/Hotoru2/Hotoru/src/templates/Grafica.html")
-    shutil.move("/home/johan/Escritorio/Hotoru2/Hotoru/Grafica.html", "/home/johan/Escritorio/Hotoru2/Hotoru/src/templates/Grafica.html")
-    return render_template('Grafica.html')
+
 
 @app.route('/<int:codigo>')
 def render(codigo):

@@ -6,9 +6,66 @@
 
 {% block content %}
 <center>
-<iframe src="http://127.0.0.1:5000/grafico/" width="1000" height="1000" frameborder="0" scrolling="no"></iframe>
+<div style="width:61%;">
+<canvas id="myChart" ></canvas>
+</div>
 </center>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script>
+var valoresX = {{ fechas|tojson }};
+var valoresY = {{ mediciones|tojson }};
+var nombre = {{nombre|tojson}};
+var ctx = document.getElementById('myChart').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
 
+    // The data for our dataset
+    data: {
+        labels: valoresX,
+        datasets: [{
+            label: nombre+' PM 2.5',
+            fill: false,
+            backgroundColor: 'rgb(27, 192, 180)',
+            borderColor: 'rgb(27, 192, 180)',
+            data: valoresY
+        }]
+    },
+
+    // Configuration options go here
+    options: {
+        responsive: true,
+				title: {
+					display: true,
+					text: nombre
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Fecha Medicion'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Valor PM 2.5'
+						}
+					}]
+				} 
+    }
+});
+</script>
 <script>
 
     var myRadios = document.getElementsByName('tabs2');
