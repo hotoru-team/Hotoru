@@ -3,10 +3,14 @@ import db.DBController as db
 from flask import Flask, render_template
 from dotenv import load_dotenv
 from model.SIATA import SIATA
-import matplotlib.pyplot as plt
+from gpcharts import figure
+import shutil
+from os import remove, path, walk
+import os.path as path
 
 load_dotenv(dotenv_path='..', verbose=True)
 app = Flask(__name__)
+app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 sources = [
     SIATA()
@@ -42,27 +46,41 @@ def get_estaciones():
     print(estaciones)
     return render_template('estaciones.html', estaciones=estaciones, zonas=ciudades)
 
-@app.route('/graficas')
-def graficas():
+@app.route('/graficas/<int:codigo>',methods=['GET'])
+def graficas(codigo):
+    if path.isfile("/home/johan/Escritorio/Hotoru2/Hotoru/src/templates/Grafica.html"):
+        remove("/home/johan/Escritorio/Hotoru2/Hotoru/src/templates/Grafica.html")
     db_estaciones = db.get_estaciones()
-    estaciones = []
-    ciudades = []
-    codigos = []
+    fechas = []
     mediciones = []
+    nombre = ''
     for estacion in db_estaciones:
-        if estacion["ciudad"] not in ciudades:
-            ciudades.append(estacion["ciudad"])
-        estaciones.append(estacion) 
-    for estacion in estaciones:
-        codigos.append(estacion["codigo"])
-        medicion = estacion["mediciones"]
-        mediciones.append(medicion[0])
+        if estacion["codigo"] == codigo:
+            nombre = estacion["barrio"]
+            medicion = estacion["mediciones"]
+            for i in range(len(medicion)):
+                 mediciones.append(medicion[i]["PM2_5"])
+                 fechas.append(medicion[i]["fecha_hora"])
+           
     
-    grafica = plt.stem(codigos,mediciones)
-    plt.xlabel('codigo')
-    plt.ylabel('pm2.5')
-    plt.savefig("Grafica.jpg", bbox_inches='tight')
-    return render_template('graficas.html', estaciones=estaciones, zonas=ciudades)
+    
+    grafico = figure(title='Grafica',
+                  xlabel='Fecha',
+                  ylabel='PM 2.5',
+                  width=800,height=600)
+    valoresY = mediciones
+    valoresX = fechas
+    print(valoresY)
+    print(valoresX)
+    grafico.plot(valoresX,valoresY)
+    return render_template('graficas.html',nombre=nombre)
+
+@app.route('/grafico/')
+def renderGrafico():
+    if path.isfile("/home/johan/Escritorio/Hotoru2/Hotoru/src/templates/Grafica.html"):
+        remove("/home/johan/Escritorio/Hotoru2/Hotoru/src/templates/Grafica.html")
+    shutil.move("/home/johan/Escritorio/Hotoru2/Hotoru/Grafica.html", "/home/johan/Escritorio/Hotoru2/Hotoru/src/templates/Grafica.html")
+    return render_template('Grafica.html')
 
 @app.route('/<int:codigo>')
 def render(codigo):
@@ -70,4 +88,5 @@ def render(codigo):
 
 if __name__ == '__main__':
     #getNewData()
+
     app.run()

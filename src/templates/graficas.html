@@ -2,15 +2,15 @@
 
 {% set color = 'teal' %}
 {% set color_code = '#38b2ac' %}
-
-{% block title %}Graficas{% endblock %}
+{% block title %}{{nombre}}{% endblock %}
 
 {% block content %}
 <center>
-<img src="src/Grafica.jpg"  width="500" height="600">
+<iframe src="http://127.0.0.1:5000/grafico/" width="1000" height="1000" frameborder="0" scrolling="no"></iframe>
 </center>
 
 <script>
+
     var myRadios = document.getElementsByName('tabs2');
       var setCheck;
       var x = 0;
