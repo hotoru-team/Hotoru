@@ -2,15 +2,73 @@
 
 {% set color = 'teal' %}
 {% set color_code = '#38b2ac' %}
-
-{% block title %}Graficas{% endblock %}
+{% block title %}{{nombre}}{% endblock %}
 
 {% block content %}
 <center>
-<img src="src/Grafica.jpg"  width="500" height="600">
+<div style="width:61%;">
+<canvas id="myChart" ></canvas>
+</div>
 </center>
-
+<br>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <script>
+var valoresX = {{ fechas|tojson }};
+var valoresY = {{ mediciones|tojson }};
+var nombre = {{nombre|tojson}};
+var ctx = document.getElementById('myChart').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: valoresX,
+        datasets: [{
+            label: nombre+' PM 2.5',
+            fill: false,
+            backgroundColor: 'rgb(27, 192, 180)',
+            borderColor: 'rgb(27, 192, 180)',
+            data: valoresY
+        }]
+    },
+
+    // Configuration options go here
+    options: {
+        responsive: true,
+				title: {
+					display: true,
+					text: nombre
+				},
+				tooltips: {
+					mode: 'index',
+					intersect: false,
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				scales: {
+					xAxes: [{
+						display: false, //cambiar a true para ver las fechas en la parte de abajo
+						scaleLabel: {
+							display: true,
+							labelString: 'Fecha Medicion'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Valor PM 2.5'
+						}
+					}]
+				} 
+    }
+});
+</script>
+<script>
+
     var myRadios = document.getElementsByName('tabs2');
       var setCheck;
       var x = 0;

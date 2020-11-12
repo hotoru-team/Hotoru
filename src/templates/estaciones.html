@@ -19,7 +19,9 @@
                     {% if estacion.ciudad == zona %}
                     <div class="m-3 bg-white min-w-0 rounded shadow-lg">
                         <div class="px-6 py-4">
-                            <div class="font-bold text-xl mb-2">Estación {{estacion.codigo}}</div>
+                            <a href="{{ 'http://127.0.0.1:5000/graficas/'+estacion.codigo }}">
+                            <div class="font-bold text-xl mb-2" style = "color:rgb(27, 192, 180)">Estación {{estacion.codigo}}</div>
+                            </a>
                             <p class="text-gray-700 text-base">
                                 <p>Esta estación pertenece la zona {{estacion.barrio}}</p>
                                 <p>La última medición de esta estación es: {{estacion.mediciones[0].PM2_5}}</p>
