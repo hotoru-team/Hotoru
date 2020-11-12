@@ -72,6 +72,5 @@ def render(codigo):
     return render_template('estacion.html', estacion=db.get_estacion(codigo))
 
 if __name__ == '__main__':
-    getNewData()
-
+    threading.Timer(0, getNewData).start()
     app.run()
