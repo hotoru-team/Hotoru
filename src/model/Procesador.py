@@ -120,5 +120,6 @@ def save(input_estacion)->dict:
 
 
 
-def show(mediciones=[]):
+def show(fecha_inicial,fecha_final,db):
+    
     pass
