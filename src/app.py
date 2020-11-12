@@ -48,30 +48,30 @@ def get_estaciones():
 @app.route('/graficas/<int:codigo>',methods=['GET'])
 def graficas(codigo):
 
-        fecha_inicial = request.args.get('trip-start')
-        fecha_final = request.args.get('trip-end')
+    fecha_inicial = request.args.get('trip-start')
+    fecha_final = request.args.get('trip-end')
         
-
-        db_estaciones = db.get_estaciones()
-        fechas = []
-        mediciones = []
-        nombre = ''
-        for estacion in db_estaciones:
-            if estacion["codigo"] == codigo:
-                nombre = estacion["barrio"]
-                medicion = estacion["mediciones"]
-                for i in range(len(medicion)):
+    db_estaciones = db.get_estaciones()
+    fechas = []
+    mediciones = []
+    nombre = ''
+    for estacion in db_estaciones:
+        if estacion["codigo"] == codigo:
+            nombre = estacion["barrio"]
+            medicion = estacion["mediciones"]
+            for i in range(len(medicion)):
+                #tomar solo la fecha : medicion[i]["fecha_hora"].split('T')[0]
+                if(fecha_inicial == medicion[i]["fecha_hora"].split('T')[0]):
+                    fechas.append(medicion[i]["fecha_hora"])
                     mediciones.append(medicion[i]["PM2_5"])
-                    #tomar solo la fecha : medicion[i]["fecha_hora"].split('T')[0]
-                    if(fecha_final == medicion[i]["fecha_hora"].split('T')[0])
-                        fechas.append(medicion[i]["fecha_hora"])
+
 
 
     valoresY = mediciones
     valoresX = fechas
     #print(valoresY)
     #print(valoresX)
-    return render_template('graficas.html',nombre=nombre,mediciones=mediciones,fechas=fechas)
+    return render_template('graficas.html',nombre=nombre,mediciones=mediciones,fechas=fechas,fecha_final=fecha_final,fecha_inicial=fecha_inicial)
 
 
 
