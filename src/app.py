@@ -1,6 +1,6 @@
 import os, time, threading
 import db.DBController as db
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from dotenv import load_dotenv
 from model.SIATA import SIATA
 
@@ -47,17 +47,25 @@ def get_estaciones():
 
 @app.route('/graficas/<int:codigo>',methods=['GET'])
 def graficas(codigo):
-    db_estaciones = db.get_estaciones()
-    fechas = []
-    mediciones = []
-    nombre = ''
-    for estacion in db_estaciones:
-        if estacion["codigo"] == codigo:
-            nombre = estacion["barrio"]
-            medicion = estacion["mediciones"]
-            for i in range(len(medicion)):
-                 mediciones.append(medicion[i]["PM2_5"])
-                 fechas.append(medicion[i]["fecha_hora"])
+
+        fecha_inicial = request.args.get('trip-start')
+        fecha_final = request.args.get('trip-end')
+        
+
+        db_estaciones = db.get_estaciones()
+        fechas = []
+        mediciones = []
+        nombre = ''
+        for estacion in db_estaciones:
+            if estacion["codigo"] == codigo:
+                nombre = estacion["barrio"]
+                medicion = estacion["mediciones"]
+                for i in range(len(medicion)):
+                    mediciones.append(medicion[i]["PM2_5"])
+                    #tomar solo la fecha : medicion[i]["fecha_hora"].split('T')[0]
+                    if(fecha_final == medicion[i]["fecha_hora"].split('T')[0])
+                        fechas.append(medicion[i]["fecha_hora"])
+
 
     valoresY = mediciones
     valoresX = fechas
