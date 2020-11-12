@@ -41,10 +41,9 @@ def get_estaciones():
             ciudades.append(estacion["ciudad"])
         estaciones.append(estacion)
         estacion["codigo"] = str(estacion["codigo"])
-        link = "http://127.0.0.1:5000/graficas/"+str(estacion["codigo"])
     print(estaciones)
    
-    return render_template('estaciones.html', estaciones=estaciones, zonas=ciudades,link=link)
+    return render_template('estaciones.html', estaciones=estaciones, zonas=ciudades)
 
 @app.route('/graficas/<int:codigo>',methods=['GET'])
 def graficas(codigo):

@@ -10,6 +10,7 @@
 <canvas id="myChart" ></canvas>
 </div>
 </center>
+<br>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 <script>
 var valoresX = {{ fechas|tojson }};
@@ -49,7 +50,7 @@ var chart = new Chart(ctx, {
 				},
 				scales: {
 					xAxes: [{
-						display: true,
+						display: false, //cambiar a true para ver las fechas en la parte de abajo
 						scaleLabel: {
 							display: true,
 							labelString: 'Fecha Medicion'
