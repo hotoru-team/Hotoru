@@ -24,7 +24,7 @@
                             </a>
                             <p class="text-gray-700 text-base">
                                 <p>Esta estación pertenece la zona {{estacion.barrio}}</p>
-                                <p>La última medición de esta estación es: {{estacion.mediciones[0].PM2_5}}</p>
+                                <p>La última medición de esta estación es: {{estacion.mediciones[(estacion.mediciones|length) -1].PM2_5}}</p>
                             </p>
                         </div>
                     </div>

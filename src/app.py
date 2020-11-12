@@ -41,7 +41,7 @@ def get_estaciones():
             ciudades.append(estacion["ciudad"])
         estaciones.append(estacion)
         estacion["codigo"] = str(estacion["codigo"])
-    print(estaciones)
+    #print(estaciones)
    
     return render_template('estaciones.html', estaciones=estaciones, zonas=ciudades)
 
@@ -61,8 +61,8 @@ def graficas(codigo):
 
     valoresY = mediciones
     valoresX = fechas
-    print(valoresY)
-    print(valoresX)
+    #print(valoresY)
+    #print(valoresX)
     return render_template('graficas.html',nombre=nombre,mediciones=mediciones,fechas=fechas)
 
 
@@ -72,6 +72,6 @@ def render(codigo):
     return render_template('estacion.html', estacion=db.get_estacion(codigo))
 
 if __name__ == '__main__':
-    #getNewData()
+    getNewData()
 
     app.run()
