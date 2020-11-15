@@ -1,9 +1,10 @@
 import os, time, threading
 import db.DBController as db
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from dotenv import load_dotenv
 from model.SIATA import SIATA
-
+from model.Procesador import save
+from datetime import datetime, timedelta
 
 load_dotenv(dotenv_path='..', verbose=True)
 app = Flask(__name__)
@@ -20,10 +21,15 @@ def getNewData():
     print("Getting new data from sources")
     for source in sources:
         estaciones = source.getData()
+        print("Insertando nuevos datos")
         for estacion in estaciones:
-            medicion = estacion["mediciones"][0]
-            db.crear_estacion(estacion)
-            db.insertar_medicion(estacion["codigo"],medicion) 
+            e = save(estacion, db)
+            if(e != None):
+                medicion = e["mediciones"][0]
+                db.crear_estacion(estacion)
+                db.insertar_medicion(estacion["codigo"],medicion) 
+    print("Datos Incertados")
+    print("─────────────────────────────")
             
     threading.Timer(60, getNewData).start()
 
@@ -45,25 +51,39 @@ def get_estaciones():
    
     return render_template('estaciones.html', estaciones=estaciones, zonas=ciudades)
 
-@app.route('/graficas/<int:codigo>',methods=['GET'])
-def graficas(codigo):
-    db_estaciones = db.get_estaciones()
+@app.route('/estacion/<int:codigo>',methods=['GET'])
+def estacion(codigo):
+
+
+    if(request.args.get('start-date') is None or request.args.get('end-date') is None):
+        fecha_final = datetime.today()
+        fecha_inicial = fecha_final - timedelta(days=1)
+    else:
+        fecha_inicial = datetime.strptime(request.args.get('start-date'), "%Y-%m-%d")
+        fecha_final = datetime.strptime(request.args.get('end-date'), "%Y-%m-%d")
+        if(fecha_inicial == fecha_final):
+            fecha_final += timedelta(days=1)
+
+    estacion = db.get_estacion_by_date(codigo, fecha_inicial, fecha_final)
     fechas = []
     mediciones = []
     nombre = ''
-    for estacion in db_estaciones:
-        if estacion["codigo"] == codigo:
-            nombre = estacion["barrio"]
-            medicion = estacion["mediciones"]
-            for i in range(len(medicion)):
-                 mediciones.append(medicion[i]["PM2_5"])
-                 fechas.append(medicion[i]["fecha_hora"])
 
-    valoresY = mediciones
-    valoresX = fechas
+    nombre = estacion["barrio"]
+    for i in range(len(estacion["mediciones"])):
+        #tomar solo la fecha : medicion[i]["fecha_hora"].split('T')[0]
+        if(fecha_inicial <= estacion["mediciones"][i]["fecha_hora"] and fecha_final >= estacion["mediciones"][i]["fecha_hora"]):
+            fechas.append(datetime.strftime(estacion["mediciones"][i]["fecha_hora"], "%d-%m-%Y %I:%M:%S %p"))
+            mediciones.append(round(estacion["mediciones"][i]["PM2_5"], 3))
+
+
+
+    # valoresY = mediciones
+    # valoresX = fechas
     #print(valoresY)
     #print(valoresX)
-    return render_template('graficas.html',nombre=nombre,mediciones=mediciones,fechas=fechas)
+
+    return render_template('estacion.html',nombre=nombre,mediciones=mediciones,fechas=fechas,fecha_final=fecha_final,fecha_inicial=fecha_inicial)
 
 
 
@@ -72,6 +92,5 @@ def render(codigo):
     return render_template('estacion.html', estacion=db.get_estacion(codigo))
 
 if __name__ == '__main__':
-    getNewData()
-
+    threading.Timer(0, getNewData).start()
     app.run()
