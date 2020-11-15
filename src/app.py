@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 from model.SIATA import SIATA
 from model.Procesador import save
 from datetime import datetime, timedelta
-from pprint import pprint
 
 load_dotenv(dotenv_path='..', verbose=True)
 app = Flask(__name__)
