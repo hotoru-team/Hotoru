@@ -21,6 +21,19 @@ def get_estacion(codigo_estacion):
     """
     return estaciones.find_one({'codigo':codigo_estacion})
 
+def get_estacion_by_date(codigo_estacion, fecha_inicial, fecha_final):
+    return estaciones.find_one({
+        'codigo':codigo_estacion,
+        'mediciones':{
+            '$elemMatch':{
+                'fecha_hora':{
+                    '$gte': fecha_inicial,
+                    '$lte': fecha_final
+                }
+            }
+        }
+    })
+
 def crear_estacion(estacion):
     """
     Se inserta una estacion en la base de datos si no existía previamente.

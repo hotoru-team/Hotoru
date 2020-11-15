@@ -3,6 +3,7 @@
 import requests
 import numpy as np 
 import pandas as pd
+import datetime
 
 import abc
 
@@ -26,7 +27,13 @@ class SIATA(IFuenteDeDatos):
             result = []
             data = requests.get(self.url).json()
             for item in data:
-                result.append({
+                dt = ""
+                fecha_hora = item["fecha_hora"]
+                if(fecha_hora == None):
+                    dt = None
+                else:
+                    dt = datetime.datetime.strptime(fecha_hora, '%Y-%m-%dT%H:%M:%S')
+                estacion = {
                     "latitude": item["latitude"],
                     "longitude": item["longitude"],
                     "online": item["online"] == "Y",
@@ -38,10 +45,10 @@ class SIATA(IFuenteDeDatos):
                     "codigo": item["codigo"],
                     "mediciones":[{
                         "PM2_5": item["PM2_5_last"],
-                        "fecha_hora": item["fecha_hora"]
+                        "fecha_hora": dt
                     }]
-                })
-            print(result[1])
+                }
+                result.append(estacion)
             return result
         except:
             raise Exception("Error getting data from SIATA")

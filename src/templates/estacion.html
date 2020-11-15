@@ -15,7 +15,7 @@
         <div>
             <label for="start">Fecha inicial:</label>
 
-            <input type="date" id="start" name="trip-start"
+            <input type="date" id="start" name="start-date"
                     value="0000-00-00"
                 min="2020-01-01" max="2021-01-01">
         </div>
@@ -23,7 +23,7 @@
         <div>
             <label for="end">Fecha final:</label>
 
-            <input type="date" id="end" name="trip-end"
+            <input type="date" id="end" name="end-date"
                         value="0000-00-00"
                         min="2020-01-01" max="2021-01-01">
         </div>
@@ -49,7 +49,7 @@ var chart = new Chart(ctx, {
     data: {
         labels: valoresX,
         datasets: [{
-            label: nombre+' PM 2.5',
+            label: 'PM 2.5',
             fill: false,
             backgroundColor: 'rgb(27, 192, 180)',
             borderColor: 'rgb(27, 192, 180)',
