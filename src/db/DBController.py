@@ -34,6 +34,19 @@ def get_estacion_by_date(codigo_estacion, fecha_inicial, fecha_final):
         }
     })
 
+def delete_mediciones_by_date(codigo_estacion, fecha_inicial, fecha_final):
+    estaciones.update_one({'codigo':codigo_estacion},
+    {
+        '$pull':{
+            'mediciones':{
+                'fecha_hora':{
+                    '$gte': fecha_inicial,
+                    '$lte': fecha_final
+                }
+            }
+        }
+    })
+
 def crear_estacion(estacion):
     """
     Se inserta una estacion en la base de datos si no existía previamente.
