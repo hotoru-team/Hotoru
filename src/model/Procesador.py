@@ -35,6 +35,8 @@ def save(input_estacion:dict, db)->dict:
     yesterday = now - timedelta(days=1)
     if(input_estacion["mediciones"][0]["fecha_hora"] == None):
         return None
+    if(input_estacion["mediciones"][0]["PM2_5"] == -9999):
+        return None
     else:
         mediciones.append(input_estacion["mediciones"][0]["PM2_5"])
     # Se van a tomar todos los datos de las últimas 48 horas

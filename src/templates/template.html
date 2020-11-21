@@ -6,9 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %} - Hotoru</title>
     <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Ubuntu" />
+    <link rel="icon" type="image/svg+xml" href="/static/img/isotipo.svg"/>
     {% endblock %}
 </head>
-<body>
+<body style="font-family: Ubuntu;">
     {% include 'components/navbar.html' %}
     <div id="content">
         {% block content %}{% endblock %}
