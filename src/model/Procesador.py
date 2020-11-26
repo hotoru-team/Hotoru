@@ -60,7 +60,16 @@ def save(input_estacion:dict, db)->dict:
         return None
     return input_estacion
 
+def ajustar_tiempo(date: datetime):
+    minute_module = date.minute%4
 
+    if(minute_module >= 2):
+        if(date.second >= 30):
+            return date.replace(minute=date.minute+4-minute_module, second=0, microsecond=0)
+        else:
+            return date.replace(minute=date.minute-minute_module, second=0, microsecond=0)
+    else:
+        return date.replace(minute=date.minute-minute_module, second=0)
 
 
 def show(fecha_inicial,fecha_final,db):

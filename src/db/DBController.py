@@ -34,6 +34,18 @@ def get_estacion_by_date(codigo_estacion, fecha_inicial, fecha_final):
         }
     })
 
+def get_estaciones_by_date(fecha_inicial, fecha_final):
+    return estaciones.find({
+        'mediciones':{
+            '$elemMatch':{
+                'fecha_hora':{
+                    '$gte': fecha_inicial,
+                    '$lte': fecha_final
+                }
+            }
+        }
+    })
+
 def delete_mediciones_by_date(codigo_estacion, fecha_inicial, fecha_final):
     estaciones.update_one({'codigo':codigo_estacion},
     {
@@ -91,8 +103,10 @@ def insertar_medicion(codigo_estacion, medicion):
             '$push':{'mediciones': medicion}
         })
 
+
 def actualizar_estacion(codigo_estacion, estacion):
     """
     Actualiza la estación que tenga el código `codigo_estacion`
     """
+    del estacion["mediciones"]
     estaciones.update_one({'codigo':codigo_estacion}, estacion)
