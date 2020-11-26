@@ -15,9 +15,9 @@ sources = [
 ]
 
 def llenarDatosVacios():
-    threading.Timer(3600, getNewData).start()
+    threading.Timer(3600, llenarDatosVacios).start()
 
-    fecha_final = datetime()
+    fecha_final = datetime.today()
     fecha_inicial = fecha_final - timedelta(hours=1)
     estaciones = db.get_estaciones_by_date(fecha_inicial, fecha_final)
 
@@ -31,8 +31,9 @@ def llenarDatosVacios():
                 delta_tiempo = (next_medicion["fecha_hora"] - medicion["fecha_hora"]).total_seconds()/60.0
                 num_datos_faltantes = delta_tiempo/4 -1
                 if(num_datos_faltantes>=1):
+                    print("Hay datos faltantes ->"+str(num_datos_faltantes))
                     aux_date = medicion["fecha_hora"]
-                    for i in range(num_datos_faltantes):
+                    for i in range(int(num_datos_faltantes)):
                         aux_date += timedelta(minutes=4)
                         # el peso del dato siguiente está dado por la distancia temporal
                         # entre la medición que se quiere calcular y la medición anterior
@@ -41,7 +42,7 @@ def llenarDatosVacios():
                         # medición que se está calculando más uno y eso dividido entre
                         # la cantidad de elementos faltantes más 1
                         peso_next = (i+1)/(num_datos_faltantes+1)
-                        peso_prev = 1 - peso_prev
+                        peso_prev = 1 - peso_next
                         PM2_5 = (medicion["PM2_5"]*peso_prev + next_medicion["PM2_5"]*peso_next)/2
                         nueva_medicion = {
                             "PM2_5": PM2_5,
