@@ -31,7 +31,6 @@ def llenarDatosVacios():
                 delta_tiempo = (next_medicion["fecha_hora"] - medicion["fecha_hora"]).total_seconds()/60.0
                 num_datos_faltantes = delta_tiempo/4 -1
                 if(num_datos_faltantes>=1):
-                    print("Hay datos faltantes ->"+str(num_datos_faltantes))
                     aux_date = medicion["fecha_hora"]
                     for i in range(int(num_datos_faltantes)):
                         aux_date += timedelta(minutes=4)
